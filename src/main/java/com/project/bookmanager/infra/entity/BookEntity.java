@@ -1,18 +1,14 @@
 package com.project.bookmanager.infra.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Repository;
 
 @Entity
 @Table(name = "library")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
-@Builder
 @Repository
 
 public class BookEntity {
@@ -32,7 +28,7 @@ public class BookEntity {
     private String gender;
 
     @Column(name = "year_of_publication")
-    private String yearOfPublication;
+    private Integer yearOfPublication;
 
 
 
