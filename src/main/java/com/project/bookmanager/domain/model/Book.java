@@ -1,14 +1,13 @@
 package com.project.bookmanager.domain.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
+
 public class Book {
 
     private Integer id;

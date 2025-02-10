@@ -7,13 +7,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 
-
+@Builder
 @Repository
 
 
 public class BookConverter {
 
-    public Book converterToDomain(BookEntity book){
-        return new Book(book.getId(), book.getAuthor(), book.getGender(), book.getYearOfPublication(),book.getTitle());
+    public static Book converterToDomain(BookEntity book){
+        return Book.builder()
+                .id(book.getId())
+                .author(book.getAuthor())
+                .title(book.getTitle())
+                .gender(book.getGender())
+                .yearOfPublication(book.getYearOfPublication())
+                .build();
     }
 }
