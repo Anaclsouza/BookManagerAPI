@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 public class BookEntity {
 
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;

@@ -31,4 +31,9 @@ public class BookManagerControllerImpl {
         return applicationBookManagerService.createOrUpdate(book);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id){
+        applicationBookManagerService.delete(id);
+    }
+
 }

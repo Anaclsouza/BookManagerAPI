@@ -38,7 +38,7 @@ public class BookManagerService {
 
 
     public Book createOrUpdate(Book book){
-        if (book.getId() != null && bookRepository.existsById(book.getId())){
+        if (book.getId() != null){
         Optional<BookEntity> bookToGet = bookRepository.findById(book.getId());
         bookToGet.get().setAuthor(book.getAuthor());
         bookToGet.get().setGender(book.getGender());
@@ -50,6 +50,14 @@ public class BookManagerService {
 
         BookEntity bookEntity = bookConverter.converterToEntity(book);
         return BookConverter.converterToDomain(bookRepository.save(bookEntity));
+
+    }
+
+    public void delete(Integer id){
+        BookEntity bookToDelete = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+
+        bookRepository.delete(bookToDelete);
 
     }
 }

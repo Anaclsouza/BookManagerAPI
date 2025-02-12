@@ -39,4 +39,8 @@ public class ApplicationBookManagerService {
     public Book createOrUpdate(Book book){
         return bookManagerService.createOrUpdate(book);
     }
+
+    public void delete(Integer id){
+        bookManagerService.delete(id);
+    }
 }
