@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,11 +26,13 @@ public class BookManagerService {
    private final BookRepositoryImpl bookRepositoryImpl;
    private final BookConverter bookConverter;
 
-//TODO: get que pega o livro pelo id, get que pega o livro por query Param, Create, update e delete
+//TODO: get que pega o livro pelo id, get que pega o livro por query Param, Create, update e delete - OK
 //TODO: tratar erros, excessoes, htpps....
 //TODO: transferir a logica para application?
-//TODO: criar um helper para adicionar ao create pra evitar que ele crie livros repetidos
-//TODO:criar um get que retorna todos os registros?
+//TODO: criar um helper para adicionar ao create pra evitar que ele crie livros repetidos - OK
+//TODO:criar um get que retorna todos os registros? - OK
+//TODO:criar enum para generos?
+//TODO: melhorar URls
 
 
     public Book getBookById(Integer id){
@@ -39,6 +42,16 @@ public class BookManagerService {
 
     public List<Book> bookToGetByParameter(RetrieverBookManager bookToparams){
          return bookRepositoryImpl.getBookWithQueryParams(bookToparams);
+    }
+
+    public List<Book> getAllBooks(){
+          List<BookEntity> bookToGet = bookRepository.findAll();
+          List<Book> books = new ArrayList<>();
+
+        for (BookEntity bookEntity : bookToGet){
+            books.add(BookConverter.converterToDomain(bookEntity));
+        }
+        return books;
     }
 
 

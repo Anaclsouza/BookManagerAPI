@@ -43,4 +43,8 @@ public class ApplicationBookManagerService {
     public void delete(Integer id){
         bookManagerService.delete(id);
     }
+
+    public List<Book> getAllBooks(){
+        return bookManagerService.getAllBooks();
+    }
 }

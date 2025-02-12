@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/books")
+@RequestMapping("/book")
 public class BookManagerControllerImpl {
 
    private final ApplicationBookManagerService applicationBookManagerService;
@@ -21,7 +21,7 @@ public class BookManagerControllerImpl {
         return applicationBookManagerService.getById(id);
     }
 
-    @GetMapping
+    @GetMapping("/queryParam")
     public List<Book> getBooksByQueryParameter(RetrieverBookManager param){
         return applicationBookManagerService.getByQueryParameter(param);
     }
@@ -34,6 +34,11 @@ public class BookManagerControllerImpl {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id){
         applicationBookManagerService.delete(id);
+    }
+
+    @GetMapping
+    public List<Book> getAllBooks(){
+        return applicationBookManagerService.getAllBooks();
     }
 
 }
