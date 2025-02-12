@@ -1,15 +1,18 @@
 package com.project.bookmanager.infra.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.stereotype.Repository;
 
 @Entity
 @Table(name = "library")
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Repository
+
+
 
 public class BookEntity {
 
@@ -18,6 +21,7 @@ public class BookEntity {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "title")
     private String title;
 
