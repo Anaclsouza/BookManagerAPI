@@ -8,4 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Integer> {
+    boolean existsByTitleAndAuthor(String title,String author);
 }

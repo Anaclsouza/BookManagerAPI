@@ -25,8 +25,13 @@ public class BookManagerService {
    private final BookRepositoryImpl bookRepositoryImpl;
    private final BookConverter bookConverter;
 
-//    TODO: get que pega o livro pelo id, get que pega o livro por query Param, Create, update e delete
+//TODO: get que pega o livro pelo id, get que pega o livro por query Param, Create, update e delete
 //TODO: tratar erros, excessoes, htpps....
+//TODO: transferir a logica para application?
+//TODO: criar um helper para adicionar ao create pra evitar que ele crie livros repetidos
+//TODO:criar um get que retorna todos os registros?
+
+
     public Book getBookById(Integer id){
         Optional<BookEntity> bookToGet = bookRepository.findById(id);
         return BookConverter.converterToDomain(bookToGet.get());
@@ -39,25 +44,33 @@ public class BookManagerService {
 
     public Book createOrUpdate(Book book){
         if (book.getId() != null){
-        Optional<BookEntity> bookToGet = bookRepository.findById(book.getId());
-        bookToGet.get().setAuthor(book.getAuthor());
-        bookToGet.get().setGender(book.getGender());
-        bookToGet.get().setTitle(book.getTitle());
-        bookToGet.get().setYearOfPublication(book.getYearOfPublication());
+        Optional<BookEntity> bookToUpdate = bookRepository.findById(book.getId());
+        bookToUpdate.get().setAuthor(book.getAuthor());
+        bookToUpdate.get().setGender(book.getGender());
+        bookToUpdate.get().setTitle(book.getTitle());
+        bookToUpdate.get().setYearOfPublication(book.getYearOfPublication());
 
-        return BookConverter.converterToDomain(bookRepository.save(bookToGet.get()));
+        return BookConverter.converterToDomain(bookRepository.save(bookToUpdate.get()));
         }
-
-        BookEntity bookEntity = bookConverter.converterToEntity(book);
-        return BookConverter.converterToDomain(bookRepository.save(bookEntity));
+        checkTitleAndAuthor(book);
+        BookEntity bookToCreate = bookConverter.converterToEntity(book);
+        return BookConverter.converterToDomain(bookRepository.save(bookToCreate));
 
     }
 
     public void delete(Integer id){
         BookEntity bookToDelete = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+                .orElseThrow(() -> new RuntimeException("book is not found"));
 
         bookRepository.delete(bookToDelete);
 
+    }
+
+    public void checkTitleAndAuthor(Book book) {
+        if (book.getTitle() != null && book.getAuthor() != null) {
+            if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())) {
+                throw new RuntimeException("The book is already created");
+            }
+        }
     }
 }
