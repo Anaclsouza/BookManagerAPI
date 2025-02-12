@@ -18,17 +18,7 @@ public class ApplicationBookManagerService {
     private final BookManagerService bookManagerService;
 
     public List<Book> getByQueryParameter(RetrieverBookManager parameter){
-
-        RetrieverBookManager param = RetrieverBookManager.builder()
-                .gender(parameter.getGender())
-                .author(parameter.getAuthor())
-                .title(parameter.getTitle())
-                .yearOfPublication(parameter.getYearOfPublication())
-                .sort(parameter.getSort())
-                .orderBy(parameter.getOrderBy())
-                .build();
-
-        return bookManagerService.bookToGetByParameter(param);
+        return bookManagerService.bookToGetByParameter(parameter);
     }
 
     public Book getById(Integer id){
