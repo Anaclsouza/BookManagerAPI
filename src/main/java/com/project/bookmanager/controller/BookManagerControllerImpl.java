@@ -27,8 +27,8 @@ public class BookManagerControllerImpl {
     }
 
     @PostMapping
-    public Book create(@RequestBody Book book){
-        return applicationBookManagerService.create(book);
+    public Book createOrUpdate(@RequestBody Book book){
+        return applicationBookManagerService.createOrUpdate(book);
     }
 
 }

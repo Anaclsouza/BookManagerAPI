@@ -35,7 +35,8 @@ public class ApplicationBookManagerService {
         return bookManagerService.getBookById(id);
     }
 
-    public Book create(Book book){
-        return bookManagerService.create(book);
+
+    public Book createOrUpdate(Book book){
+        return bookManagerService.createOrUpdate(book);
     }
 }

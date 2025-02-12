@@ -36,8 +36,20 @@ public class BookManagerService {
          return bookRepositoryImpl.getBookWithQueryParams(bookToparams);
     }
 
-    public Book create(Book book){
+
+    public Book createOrUpdate(Book book){
+        if (book.getId() != null && bookRepository.existsById(book.getId())){
+        Optional<BookEntity> bookToGet = bookRepository.findById(book.getId());
+        bookToGet.get().setAuthor(book.getAuthor());
+        bookToGet.get().setGender(book.getGender());
+        bookToGet.get().setTitle(book.getTitle());
+        bookToGet.get().setYearOfPublication(book.getYearOfPublication());
+
+        return BookConverter.converterToDomain(bookRepository.save(bookToGet.get()));
+        }
+
         BookEntity bookEntity = bookConverter.converterToEntity(book);
-         return BookConverter.converterToDomain(bookRepository.save(bookEntity));
+        return BookConverter.converterToDomain(bookRepository.save(bookEntity));
+
     }
 }
