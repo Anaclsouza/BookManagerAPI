@@ -1,14 +1,13 @@
 package com.project.bookmanager.domain;
 
 import com.project.bookmanager.domain.model.Book;
+import com.project.bookmanager.exceptions.BookManagerException;
 import com.project.bookmanager.infra.Impl.BookRepositoryImpl;
 import com.project.bookmanager.infra.converter.BookConverter;
 import com.project.bookmanager.infra.entity.BookEntity;
 import com.project.bookmanager.infra.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,8 +26,8 @@ public class BookManagerService {
    private final BookConverter bookConverter;
 
 //TODO: get que pega o livro pelo id, get que pega o livro por query Param, Create, update e delete - OK
-//TODO: tratar erros, excessoes, htpps....
-//TODO: transferir a logica para application?
+//TODO: tratar erros, excessoes, htpps.... OK
+//TODO: transferir a logica para application? nao
 //TODO: criar um helper para adicionar ao create pra evitar que ele crie livros repetidos - OK
 //TODO:criar um get que retorna todos os registros? - OK
 //TODO:criar enum para generos?
@@ -37,6 +36,9 @@ public class BookManagerService {
 
     public Book getBookById(Integer id){
         Optional<BookEntity> bookToGet = bookRepository.findById(id);
+        if (bookToGet.isEmpty()){
+            throw new BookManagerException("Book not found with id: " +id);
+        }
         return BookConverter.converterToDomain(bookToGet.get());
     }
 
@@ -58,13 +60,17 @@ public class BookManagerService {
     public Book createOrUpdate(Book book){
         if (book.getId() != null){
         Optional<BookEntity> bookToUpdate = bookRepository.findById(book.getId());
+        if (bookToUpdate.isEmpty()){
+            throw new BookManagerException("book is not found");
+        }
         bookToUpdate.get().setAuthor(book.getAuthor());
-        bookToUpdate.get().setGender(book.getGender());
+        bookToUpdate.get().setGender(book.getGender().toString());
         bookToUpdate.get().setTitle(book.getTitle());
         bookToUpdate.get().setYearOfPublication(book.getYearOfPublication());
 
         return BookConverter.converterToDomain(bookRepository.save(bookToUpdate.get()));
         }
+        checkMandatoryParamsToCreate(book);
         checkTitleAndAuthor(book);
         BookEntity bookToCreate = bookConverter.converterToEntity(book);
         return BookConverter.converterToDomain(bookRepository.save(bookToCreate));
@@ -73,17 +79,31 @@ public class BookManagerService {
 
     public void delete(Integer id){
         BookEntity bookToDelete = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("book is not found"));
+                .orElseThrow(() -> new BookManagerException("book is not found"));
 
         bookRepository.delete(bookToDelete);
 
     }
 
+    //helpers:
+
     public void checkTitleAndAuthor(Book book) {
         if (book.getTitle() != null && book.getAuthor() != null) {
             if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())) {
-                throw new RuntimeException("The book is already created");
+                throw new BookManagerException("The book is already created");
             }
+        }
+    }
+
+    public void checkMandatoryParamsToCreate(Book book){
+        if(book.getTitle() == null){
+            throw new BookManagerException("The parameter 'title' is mandatory");
+        }
+        if(book.getAuthor() == null){
+            throw new BookManagerException("The parameter 'author' is mandatory");
+        }
+        if(book.getGender() == null){
+            throw new BookManagerException("the parameter 'gender' is mandatory");
         }
     }
 }

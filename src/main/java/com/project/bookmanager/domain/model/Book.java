@@ -12,7 +12,7 @@ public class Book {
 
     private Integer id;
     private String author;
-    private String gender;
+    private Gender gender;
     private Integer yearOfPublication;
     private String title;
 }
