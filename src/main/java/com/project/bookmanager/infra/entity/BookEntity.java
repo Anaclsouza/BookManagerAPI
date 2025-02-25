@@ -36,5 +36,4 @@ public class BookEntity {
     private Integer yearOfPublication;
 
 
-
 }

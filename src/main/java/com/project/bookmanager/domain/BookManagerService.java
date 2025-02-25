@@ -25,15 +25,6 @@ public class BookManagerService {
    private final BookRepositoryImpl bookRepositoryImpl;
    private final BookConverter bookConverter;
 
-//TODO: get que pega o livro pelo id, get que pega o livro por query Param, Create, update e delete - OK
-//TODO: tratar erros, excessoes, htpps.... OK
-//TODO: transferir a logica para application? nao
-//TODO: criar um helper para adicionar ao create pra evitar que ele crie livros repetidos - OK
-//TODO:criar um get que retorna todos os registros? - OK
-//TODO:criar enum para generos?
-//TODO: melhorar URls
-
-
     public Book getBookById(Integer id){
         Optional<BookEntity> bookToGet = bookRepository.findById(id);
         if (bookToGet.isEmpty()){
@@ -55,26 +46,25 @@ public class BookManagerService {
         }
         return books;
     }
-
-
     public Book createOrUpdate(Book book){
         if (book.getId() != null){
         Optional<BookEntity> bookToUpdate = bookRepository.findById(book.getId());
         if (bookToUpdate.isEmpty()){
             throw new BookManagerException("book is not found");
         }
-        bookToUpdate.get().setAuthor(book.getAuthor());
-        bookToUpdate.get().setGender(book.getGender().toString());
-        bookToUpdate.get().setTitle(book.getTitle());
-        bookToUpdate.get().setYearOfPublication(book.getYearOfPublication());
-
+       updateBookEntity(bookToUpdate.get(),book);
         return BookConverter.converterToDomain(bookRepository.save(bookToUpdate.get()));
         }
         checkMandatoryParamsToCreate(book);
         checkTitleAndAuthor(book);
         BookEntity bookToCreate = bookConverter.converterToEntity(book);
         return BookConverter.converterToDomain(bookRepository.save(bookToCreate));
-
+    }
+    private void updateBookEntity(BookEntity bookEntity, Book book) {
+        bookEntity.setAuthor(book.getAuthor());
+        bookEntity.setGender(book.getGender().toString());
+        bookEntity.setTitle(book.getTitle());
+        bookEntity.setYearOfPublication(book.getYearOfPublication());
     }
 
     public void delete(Integer id){

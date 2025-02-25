@@ -3,9 +3,13 @@ package com.project.bookmanager.domain;
 import com.project.bookmanager.domain.model.Book;
 import com.project.bookmanager.domain.model.Gender;
 import com.project.bookmanager.exceptions.BookManagerException;
+import com.project.bookmanager.infra.Impl.BookRepositoryImpl;
 import com.project.bookmanager.infra.converter.BookConverter;
 import com.project.bookmanager.infra.entity.BookEntity;
 import com.project.bookmanager.infra.repository.BookRepository;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,14 +17,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
 
 @ExtendWith(MockitoExtension.class)
 class BookManagerServiceTest {
@@ -31,6 +37,14 @@ class BookManagerServiceTest {
     @Mock
     BookRepository bookRepository;
 
+    @Mock
+    BookConverter bookConverter;
+
+    @Mock
+    BookRepositoryImpl bookRepositoryImpl;
+
+    RetrieverBookManager retrieverBookManager;
+
     Book book;
     BookEntity bookEntity;
 
@@ -38,6 +52,7 @@ class BookManagerServiceTest {
     public void setUp() {
         bookEntity = new BookEntity(1, "A pedra filosofal", "JK Rowling", Gender.FICCAO.name(), 1998);
         book = new Book(1, "JK Rowling", Gender.FICCAO, 1998, "A pedra filosofal");
+        retrieverBookManager = new RetrieverBookManager("JK Rowling","FICCAO",1998,"yearOfPublication","asc");
     }
 
     @Test
@@ -104,6 +119,56 @@ class BookManagerServiceTest {
         verify(bookRepository, never()).delete(any());
     }
 
+    @Test
+    void updateHappyFlow(){
+        book.setAuthor("Ana Clara");
+        bookEntity.setAuthor("Ana Clara");
+        when(bookRepository.findById(1)).thenReturn(Optional.of(bookEntity));
+        when(bookRepository.save(any(BookEntity.class))).thenReturn(bookEntity);
+        mockConverterToDomain(book);
+        Book updatedBook = bookManagerService.createOrUpdate(book);
+        assertNotNull(updatedBook);
+        assertEquals("Ana Clara", updatedBook.getAuthor());
+        verify(bookRepository).save(any(BookEntity.class));
+    }
+    @Test
+    void createHappyFlow(){
+        book.setId(null);
+        bookEntity.setId(null);
+        when(bookConverter.converterToEntity(book)).thenReturn(bookEntity);
+        when(bookRepository.save(any(BookEntity.class))).thenReturn(bookEntity);
+        mockConverterToDomain(book);
+        Book createdBook = bookManagerService.createOrUpdate(book);
+        assertNotNull(createdBook);
+        verify(bookRepository).save(any(BookEntity.class));
+    }
+    @Test
+    void updateWhenBookIsNotFound(){
+        when(bookRepository.findById(1)).thenReturn(Optional.empty());
+        BookManagerException exception = assertThrows(
+                BookManagerException.class,
+                () -> bookManagerService.getBookById(1)
+        );
+        verify(bookRepository, times(1)).findById(1);
+        verify(bookRepository, never()).save(any());
+
+    }
+
+    @Test
+    void bookToGetByParameter_shouldReturnBooksBasedOnParams() {
+        List<Book> expectedBooks = List.of(book);
+
+        when(bookRepositoryImpl.getBookWithQueryParams(retrieverBookManager)).thenReturn(expectedBooks);
+
+        List<Book> books = bookManagerService.bookToGetByParameter(retrieverBookManager);
+
+        assertNotNull(books);
+        assertEquals(1, books.size());
+        assertEquals("Harry Potter", books.get(0).getTitle());
+        assertEquals("JK Rowling", books.get(0).getAuthor());
+    }
+
+
 
 
 
@@ -113,5 +178,6 @@ class BookManagerServiceTest {
                     .thenReturn(book);
         }
     }
+
 
 }
