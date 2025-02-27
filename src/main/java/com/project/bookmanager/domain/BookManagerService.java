@@ -25,21 +25,19 @@ public class BookManagerService {
    private final BookRepositoryImpl bookRepositoryImpl;
    private final BookConverter bookConverter;
 
-//   TODO: criar validacao de genero, verificar o que acontece se eu passar um genero invalido
-// TODO: criar erro ao salvar livro
-//TODO: gerar testes unitarios: genero invalido, livro nao encontrado
-//TODO: testes controller
     public Book getBookById(Integer id){
-        Optional<BookEntity> bookToGet = bookRepository.findById(id);
-        if (bookToGet.isEmpty()){
-            throw new BookManagerException("Book not found with id: " +id);
-        }
-        return BookConverter.converterToDomain(bookToGet.get());
+        BookEntity bookEntity = bookRepository.findById(id)
+                .orElseThrow(() -> new BookManagerException("Book not found with id: " + id));
+
+        return BookConverter.converterToDomain(bookEntity);
     }
 
-    public List<Book> bookToGetByParameter(RetrieverBookManager bookToparams){
-        //todo: try catch
-         return bookRepositoryImpl.getBookWithQueryParams(bookToparams);
+    public List<Book> bookByParameter(RetrieverBookManager params){
+        try {
+            return bookRepositoryImpl.getBookWithQueryParams(params);
+        } catch (Exception e) {
+            throw new BookManagerException("Error fetching books by parameters");
+        }
     }
 
     public List<Book> getAllBooks(){
@@ -74,7 +72,7 @@ public class BookManagerService {
 
     public void delete(Integer id){
         BookEntity bookToDelete = bookRepository.findById(id)
-                .orElseThrow(() -> new BookManagerException("book is not found"));
+                .orElseThrow(() -> new BookManagerException("Book not found with id: " + id));
 
         bookRepository.delete(bookToDelete);
 

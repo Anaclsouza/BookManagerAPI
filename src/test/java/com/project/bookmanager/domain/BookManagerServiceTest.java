@@ -114,7 +114,7 @@ class BookManagerServiceTest {
                 BookManagerException.class,
                 () -> bookManagerService.delete(1)
         );
-        assertEquals("book is not found", exception.getMessage());
+        assertEquals("Book not found with id: 1", exception.getMessage());
         verify(bookRepository, times(1)).findById(1);
         verify(bookRepository, never()).delete(any());
     }
@@ -162,7 +162,7 @@ class BookManagerServiceTest {
                 .build();
 
         when(bookRepositoryImpl.getBookWithQueryParams(retriever)).thenReturn(Collections.singletonList(book));
-        List<Book> result = bookManagerService.bookToGetByParameter(retriever);
+        List<Book> result = bookManagerService.bookByParameter(retriever);
 
         assertNotNull(result);
         assertEquals(1, result.size());

@@ -18,7 +18,7 @@ public class ApplicationBookManagerService {
     private final BookManagerService bookManagerService;
 
     public List<Book> getByQueryParameter(RetrieverBookManager parameter){
-        return bookManagerService.bookToGetByParameter(parameter);
+        return bookManagerService.bookByParameter(parameter);
     }
 
     public Book getById(Integer id){
