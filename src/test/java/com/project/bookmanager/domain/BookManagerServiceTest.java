@@ -7,6 +7,7 @@ import com.project.bookmanager.infra.Impl.BookRepositoryImpl;
 import com.project.bookmanager.infra.converter.BookConverter;
 import com.project.bookmanager.infra.entity.BookEntity;
 import com.project.bookmanager.infra.repository.BookRepository;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+
 
 @ExtendWith(MockitoExtension.class)
 class BookManagerServiceTest {
@@ -52,8 +53,7 @@ class BookManagerServiceTest {
     public void setUp() {
         bookEntity = new BookEntity(1, "A pedra filosofal", "JK Rowling", Gender.FICCAO.name(), 1998);
         book = new Book(1, "JK Rowling", Gender.FICCAO, 1998, "A pedra filosofal");
-        retrieverBookManager = new RetrieverBookManager("JK Rowling","FICCAO",1998,"yearOfPublication","asc");
-    }
+          }
 
     @Test
     void getByIdHappyFlow() {
@@ -155,23 +155,20 @@ class BookManagerServiceTest {
     }
 
     @Test
-    void bookToGetByParameter_shouldReturnBooksBasedOnParams() {
-        List<Book> expectedBooks = List.of(book);
+    void bookToGetByParameterHappyFlow() {
+        RetrieverBookManager retriever = RetrieverBookManager.builder()
+                .author("JK Rowling")
+                .gender("ficcao")
+                .build();
 
-        when(bookRepositoryImpl.getBookWithQueryParams(retrieverBookManager)).thenReturn(expectedBooks);
+        when(bookRepositoryImpl.getBookWithQueryParams(retriever)).thenReturn(Collections.singletonList(book));
+        List<Book> result = bookManagerService.bookToGetByParameter(retriever);
 
-        List<Book> books = bookManagerService.bookToGetByParameter(retrieverBookManager);
-
-        assertNotNull(books);
-        assertEquals(1, books.size());
-        assertEquals("Harry Potter", books.get(0).getTitle());
-        assertEquals("JK Rowling", books.get(0).getAuthor());
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(book,result.getFirst());
+        verify(bookRepositoryImpl, times(1)).getBookWithQueryParams(retriever);
     }
-
-
-
-
-
     public static void mockConverterToDomain( Book book) {
         try (MockedStatic<BookConverter> mockedConverter = mockStatic(BookConverter.class)) {
             mockedConverter.when(() -> BookConverter.converterToDomain(any(BookEntity.class)))

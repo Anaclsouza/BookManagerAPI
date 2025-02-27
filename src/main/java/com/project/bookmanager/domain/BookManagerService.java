@@ -25,6 +25,10 @@ public class BookManagerService {
    private final BookRepositoryImpl bookRepositoryImpl;
    private final BookConverter bookConverter;
 
+//   TODO: criar validacao de genero, verificar o que acontece se eu passar um genero invalido
+// TODO: criar erro ao salvar livro
+//TODO: gerar testes unitarios: genero invalido, livro nao encontrado
+//TODO: testes controller
     public Book getBookById(Integer id){
         Optional<BookEntity> bookToGet = bookRepository.findById(id);
         if (bookToGet.isEmpty()){
@@ -34,6 +38,7 @@ public class BookManagerService {
     }
 
     public List<Book> bookToGetByParameter(RetrieverBookManager bookToparams){
+        //todo: try catch
          return bookRepositoryImpl.getBookWithQueryParams(bookToparams);
     }
 

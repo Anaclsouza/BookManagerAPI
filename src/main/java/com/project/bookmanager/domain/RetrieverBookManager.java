@@ -1,9 +1,7 @@
 package com.project.bookmanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -18,5 +16,6 @@ public class RetrieverBookManager {
     private String orderBy;
 
     private String sort;
+
 
 }
