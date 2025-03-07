@@ -30,8 +30,12 @@ public class BookManagerControllerImpl {
     }
 
     @GetMapping("/search")
-    public List<Book> getBooksByQueryParameter(RetrieverBookManager param){
-        return applicationBookManagerService.getByQueryParameter(param);
+    public ResponseEntity<List<Book>> getBooksByQueryParameter(RetrieverBookManager param){
+       try{
+           return ResponseEntity.ok(applicationBookManagerService.getByQueryParameter(param));
+       }catch (BookManagerException e){
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+       }
     }
 
     @PostMapping
@@ -61,8 +65,13 @@ public class BookManagerControllerImpl {
 
 
     @GetMapping
-    public List<Book> getAllBooks(){
-        return applicationBookManagerService.getAllBooks();
+    public ResponseEntity <List<Book>> getAllBooks() {
+
+        try {
+           return ResponseEntity.ok(applicationBookManagerService.getAllBooks());
+        } catch (BookManagerException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 }
