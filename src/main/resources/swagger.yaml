@@ -1,0 +1,131 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /book:
+    get:
+      tags:
+        - book-manager
+      operationId: getAllBooks
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      tags:
+        - book-manager
+      operationId: createOrUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Book"
+  /book/{id}:
+    get:
+      tags:
+        - book-manager
+      operationId: getBookById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Book"
+    delete:
+      tags:
+        - book-manager
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /book/search:
+    get:
+      tags:
+        - book-manager
+      operationId: getBooksByQueryParameter
+      parameters:
+        - name: param
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/RetrieverBookManager"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        author:
+          type: string
+        gender:
+          type: string
+          enum:
+            - romance
+            - terror
+            - suspense
+            - ficcao
+            - fantasia
+            - autoajuda
+        yearOfPublication:
+          type: integer
+          format: int32
+        title:
+          type: string
+    RetrieverBookManager:
+      type: object
+      properties:
+        author:
+          type: string
+        gender:
+          type: string
+        title:
+          type: string
+        yearOfPublication:
+          type: string
+        orderBy:
+          type: string
+        sort:
+          type: string
