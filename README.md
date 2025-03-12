@@ -10,3 +10,12 @@ A API foi desenvolvida com Spring Boot, usando JPA/Hibernate e um banco de dados
 * Pesquisas avançadas: Faça buscas poderosas, filtrando por diferentes critérios como gênero, autor, data de lançamento e muito mais. É possível até ordenar os resultados de maneiras diferentes.
 * Documentação da API: A API vem com documentação gerada automaticamente via Swagger, o que facilita muito na hora de explorar os endpoints e testar as funcionalidades.
 * Escalabilidade e performance: Desenvolvida com Spring Boot e usando PostgreSQL, a API é otimizada para alta performance e pode ser facilmente expandida conforme a necessidade.
+
+# Tecnologias Utilizadas:
+Java 21
+Spring Boot
+Spring Data JPA
+PostgreSQL
+Swagger (Springdoc OpenAPI)
+Lombok
+Maven
