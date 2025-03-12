@@ -12,10 +12,10 @@ A API foi desenvolvida com Spring Boot, usando JPA/Hibernate e um banco de dados
 * Escalabilidade e performance: Desenvolvida com Spring Boot e usando PostgreSQL, a API é otimizada para alta performance e pode ser facilmente expandida conforme a necessidade.
 
 # Tecnologias Utilizadas:
-Java 21
-Spring Boot
-Spring Data JPA
-PostgreSQL
-Swagger (Springdoc OpenAPI)
-Lombok
-Maven
+* Java 21
+* Spring Boot
+* Spring Data JPA
+* PostgreSQL
+* Swagger (Springdoc OpenAPI)
+* Lombok
+* Maven
