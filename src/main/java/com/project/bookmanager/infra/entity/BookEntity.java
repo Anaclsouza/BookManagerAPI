@@ -1,5 +1,6 @@
 package com.project.bookmanager.infra.entity;
 
+import com.project.bookmanager.domain.model.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Repository;
 @NoArgsConstructor
 @Getter
 @Setter
-
 
 
 public class BookEntity {

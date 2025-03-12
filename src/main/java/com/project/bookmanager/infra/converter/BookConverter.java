@@ -18,12 +18,12 @@ public class BookConverter {
                 .id(book.getId())
                 .author(book.getAuthor())
                 .title(book.getTitle())
-                .gender(Gender.fromValue(book.getGender()))
+                .gender(Gender.toEnum(book.getGender()))
                 .yearOfPublication(book.getYearOfPublication())
                 .build();
     }
 
     public BookEntity converterToEntity(Book book){
-        return new BookEntity(book.getId(),book.getTitle(),book.getAuthor(),book.getGender().toString(),book.getYearOfPublication());
+        return new BookEntity(book.getId(),book.getTitle(),book.getAuthor(),book.getGender().getValue(),book.getYearOfPublication());
     }
 }

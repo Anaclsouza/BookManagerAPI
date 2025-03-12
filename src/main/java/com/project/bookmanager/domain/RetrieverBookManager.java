@@ -1,6 +1,7 @@
 package com.project.bookmanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.project.bookmanager.domain.model.Gender;
 import lombok.*;
 
 @Getter

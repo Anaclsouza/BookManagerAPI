@@ -21,14 +21,16 @@ public enum Gender {
     public String getValue() {
         return value;
     }
-
-    @JsonCreator
-    public static Gender fromValue(String value) {
+    public static Gender toEnum(String statusString) {
         for (Gender gender : Gender.values()) {
-            if (gender.value.equalsIgnoreCase(value)) {
+            if (gender.getValue().equalsIgnoreCase(statusString)) {
                 return gender;
             }
         }
-        throw new IllegalArgumentException("Gênero inválido: " + value);
+        throw new IllegalArgumentException("Status inválido: " + statusString);
+    }
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }
