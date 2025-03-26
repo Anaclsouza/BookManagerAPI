@@ -20,12 +20,12 @@ public class BaseException extends RuntimeException{
 
 
     //constructor em que voce pode personalizar a mensagem de erro.
-    protected BaseException( HttpStatus status, Level logLevel, String message, Map<String, String> metadata) {
+    protected BaseException( HttpStatus status, Level logLevel, String message) {
         super(message);
         this.status = status;
         this.logLevel = logLevel;
         this.apiMessage = null;
-        this.metadata = metadata;
+        this.metadata = null;
     }
 
     //constructor em que você recebe a mensagem de erro definida na exception que vem de ApiMessage.
@@ -37,5 +37,22 @@ public class BaseException extends RuntimeException{
         this.metadata = metadata;
     }
 
+    protected BaseException(String message,ApiMessage apiMessage, HttpStatus status, Level logLevel){
+        super(message);
+        this.apiMessage = apiMessage;
+        this.status = status;
+        this.logLevel = logLevel;
+        this.metadata = null;
+    }
 
+
+    public BaseException(String message, Throwable cause, ApiMessage apiMessage, HttpStatus httpStatus, Level level) {
+        super(message,cause);
+        this.apiMessage = apiMessage;
+        this.status = httpStatus;
+        this.logLevel = level;
+        this.metadata = null;
+
+
+    }
 }

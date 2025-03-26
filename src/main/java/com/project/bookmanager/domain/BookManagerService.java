@@ -1,10 +1,13 @@
 package com.project.bookmanager.domain;
 
 import com.project.bookmanager.domain.model.Book;
-import com.project.bookmanager.exceptions.BookManagerException;
+import com.project.bookmanager.domain.model.exception.BookIsAlreadyCreate;
+import com.project.bookmanager.domain.model.exception.BookNotFoudException;
+import com.project.bookmanager.domain.model.exception.BookRequiresMandatoryFields;
 import com.project.bookmanager.infra.Impl.BookRepositoryImpl;
 import com.project.bookmanager.infra.converter.BookConverter;
 import com.project.bookmanager.infra.entity.BookEntity;
+import com.project.bookmanager.infra.exception.RepositoryException;
 import com.project.bookmanager.infra.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -26,22 +29,26 @@ public class BookManagerService {
    private final BookConverter bookConverter;
 
     public Book getBookById(Integer id){
-        BookEntity bookEntity = bookRepository.findById(id)
-                .orElseThrow(() -> new BookManagerException("Book not found with id: " + id));
-
+        BookEntity bookEntity = bookRepository.findById(id).orElseThrow(() -> new BookNotFoudException("Book not found with id:"+ id));
         return BookConverter.converterToDomain(bookEntity);
     }
 
     public List<Book> bookByParameter(RetrieverBookManager params){
-        try {
-            return bookRepositoryImpl.getBookWithQueryParams(params);
-        } catch (Exception e) {
-            throw new BookManagerException("Error fetching books by parameters");
-        }
+            List<Book> booksToGet = bookRepositoryImpl.getBookWithQueryParams(params);
+            if (booksToGet.isEmpty()){
+                throw new BookNotFoudException("Books not found");
+            }
+            else{
+                return booksToGet;
+            }
+
     }
 
     public List<Book> getAllBooks(){
           List<BookEntity> bookToGet = bookRepository.findAll();
+          if(bookToGet.isEmpty()){
+              throw new BookNotFoudException("Books not found");
+          }
           List<Book> books = new ArrayList<>();
 
         for (BookEntity bookEntity : bookToGet){
@@ -50,19 +57,19 @@ public class BookManagerService {
         return books;
     }
     public Book createOrUpdate(Book book){
-        if (book.getId() != null){
-        Optional<BookEntity> bookToUpdate = bookRepository.findById(book.getId());
-        if (bookToUpdate.isEmpty()){
-            throw new BookManagerException("book is not found");
-        }
-       updateBookEntity(bookToUpdate.get(),book);
-        return BookConverter.converterToDomain(bookRepository.save(bookToUpdate.get()));
-        }
-        checkMandatoryParamsToCreate(book);
-        checkTitleAndAuthor(book);
-        BookEntity bookToCreate = bookConverter.converterToEntity(book);
-        return BookConverter.converterToDomain(bookRepository.save(bookToCreate));
+            if (book.getId() != null) {
+                BookEntity bookToUpdate = bookRepository.findById(book.getId()).orElseThrow(() -> new BookNotFoudException("Book not found with id:" + book.getId()));
+                    updateBookEntity(bookToUpdate, book);
+                    return BookConverter.converterToDomain(bookRepository.save(bookToUpdate));
+
+            }
+            checkMandatoryParamsToCreate(book);
+            checkTitleAndAuthor(book);
+            BookEntity bookToCreate = bookConverter.converterToEntity(book);
+            return BookConverter.converterToDomain(bookRepository.save(bookToCreate));
+
     }
+
     private void updateBookEntity(BookEntity bookEntity, Book book) {
         bookEntity.setAuthor(book.getAuthor());
         bookEntity.setGender(book.getGender().toString());
@@ -70,12 +77,9 @@ public class BookManagerService {
         bookEntity.setYearOfPublication(book.getYearOfPublication());
     }
 
-    public void delete(Integer id){
-        BookEntity bookToDelete = bookRepository.findById(id)
-                .orElseThrow(() -> new BookManagerException("Book not found with id: " + id));
-
-        bookRepository.delete(bookToDelete);
-
+    public void delete(Integer id) {
+        BookEntity bookToDelete = bookRepository.findById(id).orElseThrow(() -> new BookNotFoudException("Book not found with id: " + id));
+            bookRepository.delete(bookToDelete);
     }
 
     //helpers:
@@ -83,20 +87,20 @@ public class BookManagerService {
     public void checkTitleAndAuthor(Book book) {
         if (book.getTitle() != null && book.getAuthor() != null) {
             if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())) {
-                throw new BookManagerException("The book is already created");
+                throw new BookIsAlreadyCreate("The book is already created");
             }
         }
     }
 
     public void checkMandatoryParamsToCreate(Book book){
         if(book.getTitle() == null){
-            throw new BookManagerException("The parameter 'title' is mandatory");
+            throw new BookRequiresMandatoryFields("The parameter 'title' is mandatory");
         }
         if(book.getAuthor() == null){
-            throw new BookManagerException("The parameter 'author' is mandatory");
+            throw new BookRequiresMandatoryFields("The parameter 'author' is mandatory");
         }
         if(book.getGender() == null){
-            throw new BookManagerException("the parameter 'gender' is mandatory");
+            throw new BookRequiresMandatoryFields("the parameter 'gender' is mandatory");
         }
     }
 }
