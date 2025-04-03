@@ -4,10 +4,9 @@ import com.project.bookmanager.domain.model.Book;
 import com.project.bookmanager.domain.model.exception.BookIsAlreadyCreate;
 import com.project.bookmanager.domain.model.exception.BookNotFoudException;
 import com.project.bookmanager.domain.model.exception.BookRequiresMandatoryFields;
-import com.project.bookmanager.infra.Impl.BookRepositoryImpl;
+import com.project.bookmanager.infra.impl.BookRepositoryImpl;
 import com.project.bookmanager.infra.converter.BookConverter;
 import com.project.bookmanager.infra.entity.BookEntity;
-import com.project.bookmanager.infra.exception.RepositoryException;
 import com.project.bookmanager.infra.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -65,7 +63,7 @@ public class BookManagerService {
             }
             checkMandatoryParamsToCreate(book);
             checkTitleAndAuthor(book);
-            BookEntity bookToCreate = bookConverter.converterToEntity(book);
+            BookEntity bookToCreate = BookConverter.converterToEntity(book);
             return BookConverter.converterToDomain(bookRepository.save(bookToCreate));
 
     }

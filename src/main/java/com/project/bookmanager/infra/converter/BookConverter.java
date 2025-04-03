@@ -23,7 +23,7 @@ public class BookConverter {
                 .build();
     }
 
-    public BookEntity converterToEntity(Book book){
+    public static BookEntity converterToEntity(Book book){
         return new BookEntity(book.getId(),book.getTitle(),book.getAuthor(),book.getGender().getValue(),book.getYearOfPublication());
     }
 }
